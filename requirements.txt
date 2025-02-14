@@ -1,8 +1,7 @@
 streamlit
 scikit-learn
 pandas
-spacy==3.5.0
-thinc==8.1.0
+spacy
 numpy<2.0.0
 pandas
 spacy-streamlit
