@@ -1,18 +1,22 @@
 import streamlit as st
 import spacy
+import subprocess
+import sys
 import pandas as pd
 from io import StringIO
 
-# Cargar el modelo con caché para mejorar rendimiento
+# Verificar si el modelo está instalado y descargarlo si no lo está
 @st.cache_resource
 def load_model():
-    return spacy.load("en_core_web_sm")
+    model_name = "en_core_web_sm"
+    try:
+        return spacy.load(model_name)
+    except OSError:
+        st.warning(f"Descargando el modelo de spaCy '{model_name}', espera unos segundos...")
+        subprocess.run([sys.executable, "-m", "spacy", "download", model_name], check=True)
+        return spacy.load(model_name)
 
-try:
-    nlp = load_model()
-except OSError:
-    st.error("El modelo de spaCy 'en_core_web_sm' no está instalado. Asegúrate de que esté en 'requirements.txt'.")
-    st.stop()  # Detener ejecución si el modelo no está disponible
+nlp = load_model()
 
 # Función para extraer términos
 def extract_terms(text):
