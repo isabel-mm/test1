@@ -38,6 +38,8 @@ st.markdown(
 # Cargar archivos
 uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
 
+terms = []  # Inicializa terms antes del bloque de archivos
+
 if uploaded_files:
     corpus = ""
     file_names = []
