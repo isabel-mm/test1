@@ -35,16 +35,7 @@ st.markdown(
     """
 )
 
-# Opciones de preprocesamiento dentro de un expander
-with st.expander("⚙️ Opciones de preprocesamiento del corpus"):
-    apply_lowercase = st.checkbox("Convertir todo a minúsculas")
-    remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
-    lemmatize_text = st.checkbox("Aplicar lematización")
-    apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
-
-# Selección de método de extracción
-method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
-
+# Cargar archivos
 uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
 
 if uploaded_files:
@@ -62,6 +53,16 @@ if uploaded_files:
             st.success(f"📄 {file}")
         
         st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
+    
+    # Selección de método de extracción
+    method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
+    
+    # Opciones de preprocesamiento dentro de un expander
+    with st.expander("⚙️ Opciones de preprocesamiento del corpus"):
+        apply_lowercase = st.checkbox("Convertir todo a minúsculas")
+        remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
+        lemmatize_text = st.checkbox("Aplicar lematización")
+        apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
     
     # Aplicar preprocesamiento
     with st.spinner("🛠 Aplicando preprocesamiento..."):
@@ -84,12 +85,20 @@ if uploaded_files:
     
     st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
     
-    # Botón para descargar términos centrado
-    st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+    # Centrar el botón de descarga con HTML
+    st.markdown("""
+        <div style="display: flex; justify-content: center;">
+            <div>
+                <style>
+                    .stDownloadButton { width: 100% !important; }
+                </style>
+                """, unsafe_allow_html=True)
+    
     st.download_button(
         label="⬇️ Descargar todos los términos como CSV",
         data=pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8"),
         file_name="terminos_extraidos.csv",
         mime="text/csv"
     )
-    st.markdown("</div>", unsafe_allow_html=True)
+    
+    st.markdown("""</div></div>""", unsafe_allow_html=True)
