@@ -35,7 +35,16 @@ st.markdown(
     """
 )
 
-# Cargar archivos
+# Opciones de preprocesamiento
+st.subheader("⚙️ Opciones de preprocesamiento del corpus")
+apply_lowercase = st.checkbox("Convertir todo a minúsculas")
+remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
+lemmatize_text = st.checkbox("Aplicar lematización")
+apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
+
+# Selección de método de extracción
+method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
+
 uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
 
 if uploaded_files:
@@ -51,44 +60,32 @@ if uploaded_files:
     st.subheader("📜 Archivos cargados")
     st.write(", ".join(file_names))
     
-    # Opciones de preprocesamiento dentro de un expander
-    with st.expander("⚙️ Opciones de preprocesamiento del corpus"):
-        apply_lowercase = st.checkbox("Convertir todo a minúsculas")
-        remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
-        lemmatize_text = st.checkbox("Aplicar lematización")
-        apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
-    
     # Aplicar preprocesamiento
     corpus = preprocess_text(corpus, apply_lowercase, remove_stopwords, lemmatize_text, apply_custom_stoplist)
     
     st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
     
-    # Selección de método de extracción
-    method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
+    # Aplicar método seleccionado
+    if method == "Método estadístico (TF-IDF)":
+        terms = extract_terms_tfidf(corpus)
+        st.subheader("📊 Términos extraídos con TF-IDF")
+        df_terms = pd.DataFrame(terms[:50], columns=["Término", "Puntaje TF-IDF"])
+    elif method == "Método lingüístico (POS)":
+        terms = extract_terms_pos(corpus)
+        st.subheader("📖 Términos extraídos con POS Tagging (ordenados por frecuencia)")
+        df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Frecuencia"])
+    else:
+        terms = extract_terms_cvalue(corpus)
+        st.subheader("🔬 Términos extraídos con C-Value")
+        df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Puntaje C-Value"])
     
-    # Aplicar método seleccionado con indicador de carga
-    if method:
-        with st.spinner("🔍 Extrayendo términos..."):
-            if method == "Método estadístico (TF-IDF)":
-                terms = extract_terms_tfidf(corpus)
-                st.subheader("📊 Términos extraídos con TF-IDF")
-                df_terms = pd.DataFrame(terms[:50], columns=["Término", "Puntaje TF-IDF"])
-            elif method == "Método lingüístico (POS)":
-                terms = extract_terms_pos(corpus)
-                st.subheader("📖 Términos extraídos con POS Tagging (ordenados por frecuencia)")
-                df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Frecuencia"])
-            else:
-                terms = extract_terms_cvalue(corpus)
-                st.subheader("🔬 Términos extraídos con C-Value")
-                df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Puntaje C-Value"])
+    st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
     
-        st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
-    
-        # Botón para descargar términos
-        csv = pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8")
-        st.download_button(
-            label="⬇️ Descargar todos los términos como CSV",
-            data=csv,
-            file_name="terminos_extraidos.csv",
-            mime="text/csv"
-        )
+    # Botón para descargar términos
+    csv = pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8")
+    st.download_button(
+        label="⬇️ Descargar todos los términos como CSV",
+        data=csv,
+        file_name="terminos_extraidos.csv",
+        mime="text/csv"
+    )
