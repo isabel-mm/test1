@@ -45,9 +45,12 @@ def extract_terms_pos(text):
 # Interfaz en Streamlit
 st.title("Extracción de Términos desde un Archivo de Texto")
 
+# Selección de método de extracción
+method = st.selectbox("Selecciona el método de extracción", ["TF-IDF", "POS Tagging"])
+
 uploaded_file = st.file_uploader("Carga un archivo .txt", type=["txt"], key="file_uploader")
 
-if uploaded_file is not None:
+if uploaded_file is not None and method:
     # Leer contenido del archivo
     stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
     text = stringio.read()
@@ -55,9 +58,7 @@ if uploaded_file is not None:
     st.subheader("Texto cargado")
     st.text_area("Contenido del archivo:", text, height=200)
     
-    # Selección de método de extracción
-    method = st.selectbox("Selecciona el método de extracción", ["TF-IDF", "POS Tagging"])
-    
+    # Aplicar método seleccionado
     if method == "TF-IDF":
         terms = extract_terms_tfidf(text)
         st.subheader("Términos extraídos con TF-IDF")
