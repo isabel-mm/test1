@@ -33,7 +33,7 @@ def preprocess_text(text, apply_lowercase=True, remove_stopwords=True, lemmatize
     # Eliminar términos compuestos de la stoplist antes de tokenizar
     if apply_custom_stoplist:
         for phrase in academic_stoplist:
-            text = re.sub(rf"\b{re.escape(phrase)}\b", "", text)
+            text = re.sub(rf"\b{re.escape(phrase)}\b", " ", text)  # Reemplazar con espacio en lugar de eliminar
     
     doc = nlp(text)
     processed_tokens = []
