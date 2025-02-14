@@ -31,7 +31,7 @@ def extract_terms_tfidf(text):
     terms_with_scores = list(zip(feature_array, tfidf_scores))
     terms_with_scores.sort(key=lambda x: x[1], reverse=True)
     
-    return [t for t in terms_with_scores[:20] if re.search(r"\w", t[0])]  # Filtrar términos vacíos o caracteres especiales
+    return [t for t in terms_with_scores[:50] if re.search(r"\w", t[0])]  # Filtrar términos vacíos o caracteres especiales
 
 # Función para extraer términos clave con POS tagging y lematización
 def extract_terms_pos(text):
@@ -69,7 +69,7 @@ def extract_terms_pos(text):
             term_counts[" ".join(term)] += 1
     
     # Ordenar términos por frecuencia y devolver los más frecuentes
-    return term_counts.most_common(20)
+    return term_counts.most_common(50)
 
 # Interfaz en Streamlit
 st.title("Extracción de Términos desde un Archivo de Texto")
@@ -97,7 +97,7 @@ if uploaded_file is not None and method:
         st.subheader("Términos extraídos con POS Tagging (ordenados por frecuencia)")
         df_terms = pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"])
     
-    st.dataframe(df_terms)
+    st.dataframe(df_terms.head(50))  # Mostrar solo los 50 primeros términos en la interfaz
     
     # Botón para descargar términos
     csv = df_terms.to_csv(index=False).encode("utf-8")
