@@ -1,4 +1,5 @@
 streamlit
+re
 scikit-learn
 pandas
 spacy
