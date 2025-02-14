@@ -72,7 +72,7 @@ def extract_terms_pos(text):
     return term_counts.most_common()
 
 # Interfaz en Streamlit
-st.title("📌 Extracción de Términos desde un Archivo de Texto")
+st.title("📌 Sistema de extracción terminológica")
 
 st.markdown(
     """ 
