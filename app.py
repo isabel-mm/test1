@@ -65,7 +65,7 @@ if uploaded_files:
     # Aplicar preprocesamiento
     with st.spinner("🛠 Aplicando preprocesamiento..."):
         corpus = preprocess_text(corpus, apply_lowercase, remove_stopwords, lemmatize_text, apply_custom_stoplist)
-    
+
     # Selección de método de extracción
     method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
     
@@ -85,17 +85,15 @@ if uploaded_files:
             df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Puntaje C-Value"])
     
     st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
-    
-st.markdown("""
-    <div style="display: flex; justify-content: center;">
-""", unsafe_allow_html=True)
 
-st.download_button(
-    label="⬇️ Descargar todos los términos como CSV",
-    data=pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8"),
-    file_name="terminos_extraidos.csv",
-    mime="text/csv"
-)
+    # Botón de descarga solo si hay términos extraídos
+    st.markdown("<div style='display: flex; justify-content: center;'>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
+    st.download_button(
+        label="⬇️ Descargar todos los términos como CSV",
+        data=pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8"),
+        file_name="terminos_extraidos.csv",
+        mime="text/csv"
+    )
 
+    st.markdown("</div>", unsafe_allow_html=True)
