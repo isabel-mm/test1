@@ -5,6 +5,7 @@ import sys
 import pandas as pd
 from io import StringIO
 from term_extraction import extract_terms_tfidf, extract_terms_pos
+from preprocessing import preprocess_text
 
 # Verificar si el modelo de spaCy está instalado y descargarlo si no lo está
 @st.cache_resource
@@ -33,6 +34,13 @@ st.markdown(
     """
 )
 
+# Opciones de preprocesamiento
+st.subheader("⚙️ Opciones de preprocesamiento del corpus")
+apply_lowercase = st.checkbox("Convertir todo a minúsculas")
+remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
+lemmatize_text = st.checkbox("Aplicar lematización")
+apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
+
 # Selección de método de extracción
 method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)"])
 
@@ -51,7 +59,10 @@ if uploaded_files:
     st.subheader("📜 Archivos cargados")
     st.write(", ".join(file_names))
     
-    st.text_area("📝 Contenido combinado del corpus:", corpus[:1000] + "...", height=200)
+    # Aplicar preprocesamiento
+    corpus = preprocess_text(corpus, apply_lowercase, remove_stopwords, lemmatize_text, apply_custom_stoplist)
+    
+    st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
     
     # Aplicar método seleccionado
     if method == "Método estadístico (TF-IDF)":
