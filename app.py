@@ -1,12 +1,17 @@
 import streamlit as st
 import spacy
+import os
 import pandas as pd
 from io import StringIO
 
-# Cargar modelo de spaCy
-@st.cache_resource
+# Función para cargar el modelo de spaCy
 def load_model():
-    return spacy.load("en_core_web_sm")  # Puedes cambiarlo por otro modelo según el idioma
+    model_name = "en_core_web_sm"
+    try:
+        return spacy.load(model_name)
+    except OSError:
+        os.system(f"python -m spacy download {model_name}")
+        return spacy.load(model_name)
 
 nlp = load_model()
 
