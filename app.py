@@ -5,6 +5,8 @@ import sys
 import pandas as pd
 from io import StringIO
 from sklearn.feature_extraction.text import TfidfVectorizer
+import re
+from collections import Counter
 
 # Verificar si el modelo de spaCy está instalado y descargarlo si no lo está
 @st.cache_resource
@@ -29,12 +31,12 @@ def extract_terms_tfidf(text):
     terms_with_scores = list(zip(feature_array, tfidf_scores))
     terms_with_scores.sort(key=lambda x: x[1], reverse=True)
     
-    return terms_with_scores[:20]  # Extrae los 20 términos más relevantes
+    return [t for t in terms_with_scores[:20] if re.search(r"\w", t[0])]  # Filtrar términos vacíos o caracteres especiales
 
 # Función para extraer términos clave con POS tagging y lematización
 def extract_terms_pos(text):
     doc = nlp(text.lower())  # Normalizar a minúscula
-    terms = set()
+    term_counts = Counter()
     
     for i, token in enumerate(doc):
         # NOUN (hasta 3 seguidos)
@@ -44,7 +46,7 @@ def extract_terms_pos(text):
             while j < len(doc) and doc[j].pos_ == "NOUN" and len(term) < 3:
                 term.append(doc[j].lemma_)
                 j += 1
-            terms.add(" ".join(term))
+            term_counts[" ".join(term)] += 1
         
         # ADJ (hasta 3) + NOUN
         elif token.pos_ == "ADJ":
@@ -55,7 +57,7 @@ def extract_terms_pos(text):
                 j += 1
             if j < len(doc) and doc[j].pos_ == "NOUN":
                 term.append(doc[j].lemma_)
-                terms.add(" ".join(term))
+                term_counts[" ".join(term)] += 1
         
         # NOUN + PREP ('of') + NOUN (hasta 3)
         elif token.pos_ == "NOUN" and i + 2 < len(doc) and doc[i+1].pos_ == "ADP" and doc[i+1].text.lower() == "of" and doc[i+2].pos_ == "NOUN":
@@ -64,9 +66,10 @@ def extract_terms_pos(text):
             while j < len(doc) and doc[j].pos_ == "NOUN" and len(term) < 5:
                 term.append(doc[j].lemma_)
                 j += 1
-            terms.add(" ".join(term))
+            term_counts[" ".join(term)] += 1
     
-    return sorted(terms)[:20]  # Extrae los 20 términos más frecuentes
+    # Ordenar términos por frecuencia y devolver los más frecuentes
+    return term_counts.most_common(20)
 
 # Interfaz en Streamlit
 st.title("Extracción de Términos desde un Archivo de Texto")
@@ -91,8 +94,8 @@ if uploaded_file is not None and method:
         df_terms = pd.DataFrame(terms, columns=["Término", "Puntaje TF-IDF"])
     else:
         terms = extract_terms_pos(text)
-        st.subheader("Términos extraídos con POS Tagging")
-        df_terms = pd.DataFrame(terms, columns=["Términos extraídos"])
+        st.subheader("Términos extraídos con POS Tagging (ordenados por frecuencia)")
+        df_terms = pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"])
     
     st.dataframe(df_terms)
     
