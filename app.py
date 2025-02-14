@@ -31,7 +31,7 @@ st.markdown(
     - 📖 **Método lingüístico (POS Tagging):** extrae términos clave utilizando categorías gramaticales (sustantivos, adjetivos, y estructuras específicas).
     - 🔬 **Método híbrido (C-Value):** identifica términos multi-palabra relevantes basándose en su frecuencia y estructura dentro del texto.
     
-    📂 **Sube uno o más archivos en texto plano (.txt) y elige un método para la extracción. Luego puedes descargar el listado de candidatos a término en formato .csv.**
+    📂 **Sube un texto o tu corpus en texto plano (.txt) y elige un método para la extracción. Luego puedes descargar el listado de candidatos a término en formato .csv.**
     """
 )
 
@@ -42,10 +42,10 @@ remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
 lemmatize_text = st.checkbox("Aplicar lematización")
 apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
 
+uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
+
 # Selección de método de extracción
 method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
-
-uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
 
 if uploaded_files:
     corpus = ""
