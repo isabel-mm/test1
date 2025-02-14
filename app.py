@@ -36,9 +36,35 @@ def extract_terms_pos(text):
     doc = nlp(text.lower())  # Normalizar a minúscula
     terms = set()
     
-    for token in doc:
-        if token.pos_ in {"NOUN", "PROPN"} and not token.is_stop:
-            terms.add(token.lemma_)
+    for i, token in enumerate(doc):
+        # NOUN (hasta 3 seguidos)
+        if token.pos_ == "NOUN":
+            term = [token.lemma_]
+            j = i + 1
+            while j < len(doc) and doc[j].pos_ == "NOUN" and len(term) < 3:
+                term.append(doc[j].lemma_)
+                j += 1
+            terms.add(" ".join(term))
+        
+        # ADJ (hasta 3) + NOUN
+        elif token.pos_ == "ADJ":
+            term = [token.lemma_]
+            j = i + 1
+            while j < len(doc) and doc[j].pos_ == "ADJ" and len(term) < 3:
+                term.append(doc[j].lemma_)
+                j += 1
+            if j < len(doc) and doc[j].pos_ == "NOUN":
+                term.append(doc[j].lemma_)
+                terms.add(" ".join(term))
+        
+        # NOUN + PREP ('of') + NOUN (hasta 3)
+        elif token.pos_ == "NOUN" and i + 2 < len(doc) and doc[i+1].pos_ == "ADP" and doc[i+1].text.lower() == "of" and doc[i+2].pos_ == "NOUN":
+            term = [token.lemma_, "of", doc[i+2].lemma_]
+            j = i + 3
+            while j < len(doc) and doc[j].pos_ == "NOUN" and len(term) < 5:
+                term.append(doc[j].lemma_)
+                j += 1
+            terms.add(" ".join(term))
     
     return sorted(terms)[:20]  # Extrae los 20 términos más frecuentes
 
@@ -46,7 +72,7 @@ def extract_terms_pos(text):
 st.title("Extracción de Términos desde un Archivo de Texto")
 
 # Selección de método de extracción
-method = st.selectbox("Selecciona el método de extracción", ["TF-IDF", "POS Tagging"])
+method = st.selectbox("Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)"])
 
 uploaded_file = st.file_uploader("Carga un archivo .txt", type=["txt"], key="file_uploader")
 
@@ -59,7 +85,7 @@ if uploaded_file is not None and method:
     st.text_area("Contenido del archivo:", text, height=200)
     
     # Aplicar método seleccionado
-    if method == "TF-IDF":
+    if method == "Método estadístico (TF-IDF)":
         terms = extract_terms_tfidf(text)
         st.subheader("Términos extraídos con TF-IDF")
         df_terms = pd.DataFrame(terms, columns=["Término", "Puntaje TF-IDF"])
