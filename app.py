@@ -4,7 +4,7 @@ import subprocess
 import sys
 import pandas as pd
 from io import StringIO
-from term_extraction import extract_terms_tfidf, extract_terms_pos
+from term_extraction import extract_terms_tfidf, extract_terms_pos, extract_terms_cvalue
 from preprocessing import preprocess_text
 
 # Verificar si el modelo de spaCy está instalado y descargarlo si no lo está
@@ -29,6 +29,7 @@ st.markdown(
     
     - 📊 **Método estadístico (TF-IDF):** identifica términos con alta relevancia basándose en su frecuencia e importancia.
     - 📖 **Método lingüístico (POS Tagging):** extrae términos clave utilizando categorías gramaticales (sustantivos, adjetivos, y estructuras específicas).
+    - 🔬 **Método híbrido (C-Value):** identifica términos multi-palabra relevantes basándose en su frecuencia y estructura dentro del texto.
     
     📂 **Sube uno o más archivos en texto plano (.txt) y elige un método para la extracción. Luego puedes descargar el listado de candidatos a término en formato .csv.**
     """
@@ -42,7 +43,7 @@ lemmatize_text = st.checkbox("Aplicar lematización")
 apply_custom_stoplist = st.checkbox("Aplicar stoplist académica")
 
 # Selección de método de extracción
-method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)"])
+method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
 
 uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
 
@@ -69,10 +70,14 @@ if uploaded_files:
         terms = extract_terms_tfidf(corpus)
         st.subheader("📊 Términos extraídos con TF-IDF")
         df_terms = pd.DataFrame(terms[:50], columns=["Término", "Puntaje TF-IDF"])
-    else:
+    elif method == "Método lingüístico (POS)":
         terms = extract_terms_pos(corpus)
         st.subheader("📖 Términos extraídos con POS Tagging (ordenados por frecuencia)")
         df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Frecuencia"])
+    else:
+        terms = extract_terms_cvalue(corpus)
+        st.subheader("🔬 Términos extraídos con C-Value")
+        df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Puntaje C-Value"])
     
     st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
     
