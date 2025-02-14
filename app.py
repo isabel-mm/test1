@@ -86,20 +86,16 @@ if uploaded_files:
     
     st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
     
-    # Centrar el botón de descarga con HTML
-    st.markdown("""
-        <div style="display: flex; justify-content: center;">
-            <div>
-                <style>
-                    .stDownloadButton { width: 100% !important; }
-                </style>
-                """, unsafe_allow_html=True)
-    
-    st.download_button(
-        label="⬇️ Descargar todos los términos como CSV",
-        data=pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8"),
-        file_name="terminos_extraidos.csv",
-        mime="text/csv"
-    )
-    
-    st.markdown("""</div></div>""", unsafe_allow_html=True)
+st.markdown("""
+    <div style="display: flex; justify-content: center;">
+""", unsafe_allow_html=True)
+
+st.download_button(
+    label="⬇️ Descargar todos los términos como CSV",
+    data=pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8"),
+    file_name="terminos_extraidos.csv",
+    mime="text/csv"
+)
+
+st.markdown("</div>", unsafe_allow_html=True)
+
