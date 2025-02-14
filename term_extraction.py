@@ -48,3 +48,44 @@ def extract_terms_pos(text):
             term_counts[" ".join(term)] += 1
     
     return term_counts.most_common()
+
+def extract_terms_cvalue(text, min_length=2, max_length=5):
+    """
+    Extrae términos utilizando el algoritmo C-Value.
+    
+    :param text: Texto preprocesado de entrada.
+    :param min_length: Longitud mínima de los términos candidatos.
+    :param max_length: Longitud máxima de los términos candidatos.
+    :return: Lista de términos ordenados por su puntuación C-Value.
+    """
+    doc = nlp(text)
+    term_candidates = []
+    
+    # Extraer n-gramas de longitud entre min_length y max_length
+    words = [token.text for token in doc if token.is_alpha]
+    for length in range(min_length, max_length + 1):
+        for i in range(len(words) - length + 1):
+            term_candidates.append(" ".join(words[i:i + length]))
+    
+    # Contar ocurrencias de cada término
+    term_frequencies = Counter(term_candidates)
+    
+    # Calcular C-Value para cada término
+    term_cvalue = {}
+    nested_terms = defaultdict(list)
+    
+    for term in term_frequencies:
+        term_cvalue[term] = math.log2(len(term.split())) * term_frequencies[term]
+        for longer_term in term_frequencies:
+            if term in longer_term and term != longer_term:
+                nested_terms[term].append(longer_term)
+    
+    for term, longer_terms in nested_terms.items():
+        nested_count = sum(term_frequencies[t] for t in longer_terms)
+        term_cvalue[term] -= nested_count / len(longer_terms) if longer_terms else 0
+    
+    # Ordenar términos por C-Value
+    sorted_terms = sorted(term_cvalue.items(), key=lambda x: x[1], reverse=True)
+    
+    return sorted_terms[:50]  # Devolver los 50 términos más relevantes
+
