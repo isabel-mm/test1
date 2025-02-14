@@ -1,4 +1,5 @@
 streamlit
-spacy
 pandas
+spacy
 spacy-lookups-data
+en_core_web_sm
