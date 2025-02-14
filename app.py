@@ -35,6 +35,9 @@ st.markdown(
     """
 )
 
+# Inicializar variables
+terms = []
+
 # Cargar archivos
 uploaded_files = st.file_uploader("📎 Carga uno o más archivos .txt", type=["txt"], accept_multiple_files=True, key="file_uploader")
 
