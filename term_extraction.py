@@ -1,6 +1,7 @@
 import spacy
 import re
 from collections import Counter
+from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 nlp = spacy.load("en_core_web_sm")
