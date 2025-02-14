@@ -57,15 +57,15 @@ if uploaded_files:
         corpus += text + "\n"
         file_names.append(uploaded_file.name)
     
-    st.subheader("📜 Archivos cargados")
-    for file in file_names:
-        st.success(f"📄 {file}")
+    with st.expander("📜 Archivos cargados y contenido del corpus"):
+        for file in file_names:
+            st.success(f"📄 {file}")
+        
+        st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
     
     # Aplicar preprocesamiento
     with st.spinner("🛠 Aplicando preprocesamiento..."):
         corpus = preprocess_text(corpus, apply_lowercase, remove_stopwords, lemmatize_text, apply_custom_stoplist)
-    
-    st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
     
     # Aplicar método seleccionado con indicador de carga
     with st.spinner("🔍 Extrayendo términos..."):
