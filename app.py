@@ -43,19 +43,17 @@ if uploaded_files:
     file_names = []
     
     for uploaded_file in uploaded_files:
+        if uploaded_file.type != "text/plain":
+            st.error(f"❌ Error: {uploaded_file.name} no es un archivo .txt válido.")
+            continue
+        
         stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
         text = stringio.read()
         corpus += text + "\n"
         file_names.append(uploaded_file.name)
     
-    with st.expander("📜 Archivos cargados y contenido del corpus"):
-        for file in file_names:
-            st.success(f"📄 {file}")
-        
-        st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
-    
-    # Selección de método de extracción
-    method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
+    if file_names:
+        st.success(f"📄 Se han cargado {len(file_names)} archivos correctamente.")
     
     # Opciones de preprocesamiento dentro de un expander
     with st.expander("⚙️ Opciones de preprocesamiento del corpus"):
@@ -67,6 +65,9 @@ if uploaded_files:
     # Aplicar preprocesamiento
     with st.spinner("🛠 Aplicando preprocesamiento..."):
         corpus = preprocess_text(corpus, apply_lowercase, remove_stopwords, lemmatize_text, apply_custom_stoplist)
+    
+    # Selección de método de extracción
+    method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
     
     # Aplicar método seleccionado con indicador de carga
     with st.spinner("🔍 Extrayendo términos..."):
