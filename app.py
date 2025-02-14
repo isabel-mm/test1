@@ -52,6 +52,10 @@ if uploaded_files:
         corpus += text + "\n"
         file_names.append(uploaded_file.name)
     
+    if not corpus.strip():
+        st.error("❌ Error: No hay contenido válido en los archivos subidos.")
+        st.stop()
+    
     if file_names:
         st.success(f"📄 Se han cargado {len(file_names)} archivos correctamente.")
     
@@ -65,6 +69,10 @@ if uploaded_files:
     # Aplicar preprocesamiento
     with st.spinner("🛠 Aplicando preprocesamiento..."):
         corpus = preprocess_text(corpus, apply_lowercase, remove_stopwords, lemmatize_text, apply_custom_stoplist)
+    
+    if corpus is None or not corpus.strip():
+        st.error("❌ Error: El preprocesamiento eliminó todo el contenido del corpus.")
+        st.stop()
     
     # Selección de método de extracción
     method = st.selectbox("🛠️ Selecciona el método de extracción", ["Método estadístico (TF-IDF)", "Método lingüístico (POS)", "Método híbrido (C-Value)"])
@@ -84,17 +92,17 @@ if uploaded_files:
             st.subheader("🔬 Términos extraídos con C-Value")
             df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Puntaje C-Value"])
     
+    if not terms:
+        st.error("❌ Error: No se encontraron términos extraídos.")
+        st.stop()
+    
     st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
     
     # Centrar el botón de descarga con HTML
     st.markdown("""
         <div style="display: flex; justify-content: center;">
-            <div>
-                <style>
-                    .stDownloadButton { width: 100% !important; }
-                </style>
-                """, unsafe_allow_html=True)
-    
+    """, unsafe_allow_html=True)
+
     st.download_button(
         label="⬇️ Descargar todos los términos como CSV",
         data=pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8"),
@@ -102,4 +110,4 @@ if uploaded_files:
         mime="text/csv"
     )
     
-    st.markdown("""</div></div>""", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
