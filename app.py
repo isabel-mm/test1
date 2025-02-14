@@ -3,7 +3,7 @@ import spacy
 import pandas as pd
 from io import StringIO
 
-# Cargar modelo de spaCy sin instalación en tiempo de ejecución
+# Cargar el modelo con caché para mejorar rendimiento
 @st.cache_resource
 def load_model():
     return spacy.load("en_core_web_sm")
@@ -12,14 +12,13 @@ try:
     nlp = load_model()
 except OSError:
     st.error("El modelo de spaCy 'en_core_web_sm' no está instalado. Asegúrate de que esté en 'requirements.txt'.")
-    st.stop()  # Detiene la ejecución para evitar errores
+    st.stop()  # Detener ejecución si el modelo no está disponible
 
 # Función para extraer términos
 def extract_terms(text):
     doc = nlp(text)
     terms = set()
     
-    # Extraer noun chunks y entidades nombradas
     for chunk in doc.noun_chunks:
         terms.add(chunk.text)
     
