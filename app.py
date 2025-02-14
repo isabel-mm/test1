@@ -31,8 +31,19 @@ def extract_terms_tfidf(text):
     
     return terms_with_scores[:20]  # Extrae los 20 términos más relevantes
 
+# Función para extraer términos clave con POS tagging y lematización
+def extract_terms_pos(text):
+    doc = nlp(text.lower())  # Normalizar a minúscula
+    terms = set()
+    
+    for token in doc:
+        if token.pos_ in {"NOUN", "PROPN"} and not token.is_stop:
+            terms.add(token.lemma_)
+    
+    return sorted(terms)[:20]  # Extrae los 20 términos más frecuentes
+
 # Interfaz en Streamlit
-st.title("Extracción de Términos con TF-IDF desde un Archivo de Texto")
+st.title("Extracción de Términos desde un Archivo de Texto")
 
 uploaded_file = st.file_uploader("Carga un archivo .txt", type=["txt"], key="file_uploader")
 
@@ -44,22 +55,25 @@ if uploaded_file is not None:
     st.subheader("Texto cargado")
     st.text_area("Contenido del archivo:", text, height=200)
     
-    # Extraer términos con TF-IDF
-    terms = extract_terms_tfidf(text)
+    # Selección de método de extracción
+    method = st.selectbox("Selecciona el método de extracción", ["TF-IDF", "POS Tagging"])
     
-    # Mostrar resultados
-    if terms:
+    if method == "TF-IDF":
+        terms = extract_terms_tfidf(text)
         st.subheader("Términos extraídos con TF-IDF")
         df_terms = pd.DataFrame(terms, columns=["Término", "Puntaje TF-IDF"])
-        st.dataframe(df_terms)
-        
-        # Botón para descargar términos
-        csv = df_terms.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            label="Descargar términos como CSV",
-            data=csv,
-            file_name="terminos_tfidf.csv",
-            mime="text/csv"
-        )
     else:
-        st.warning("No se encontraron términos en el archivo.")
+        terms = extract_terms_pos(text)
+        st.subheader("Términos extraídos con POS Tagging")
+        df_terms = pd.DataFrame(terms, columns=["Términos extraídos"])
+    
+    st.dataframe(df_terms)
+    
+    # Botón para descargar términos
+    csv = df_terms.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        label="Descargar términos como CSV",
+        data=csv,
+        file_name="terminos_extraidos.csv",
+        mime="text/csv"
+    )
