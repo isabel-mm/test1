@@ -121,13 +121,12 @@ elif opcion == "Validación de términos":
         | aprendizaje automático | True |
         | modelo lingüístico | False |
         | procesamiento del lenguaje natural | True |
-
-        📎 **Sube tu archivo CSV aquí:**
+        
         """
     )
 
     # Cargar el CSV
-    uploaded_file = st.file_uploader()
+    uploaded_file = st.file_uploader("📎 Sube tu archivo CSV aquí")
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
