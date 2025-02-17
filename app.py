@@ -9,18 +9,47 @@ from acerca_de import acerca_de  # Importamos la sección "Acerca de"
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
-# Cambiar el diseño del menú lateral con botones
+# 🔹 CSS para cambiar los colores de los botones 🔹
+st.sidebar.markdown(
+    """
+    <style>
+    .stButton > button {
+        width: 100%;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+        transition: 0.3s;
+    }
+    
+    /* 🎨 Colores para cada botón */
+    .stButton:nth-child(1) button { background-color: #4CAF50; color: white; } /* Verde */
+    .stButton:nth-child(2) button { background-color: #2196F3; color: white; } /* Azul */
+    .stButton:nth-child(3) button { background-color: #FF9800; color: white; } /* Naranja */
+    .stButton:nth-child(4) button { background-color: #F44336; color: white; } /* Rojo */
+    .stButton:nth-child(5) button { background-color: #9C27B0; color: white; } /* Morado */
+
+    .stButton > button:hover {
+        filter: brightness(90%);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# 📌 Cambiar el diseño del menú lateral con botones de colores
 st.sidebar.markdown("### Navegador")
 
-if st.sidebar.button("Inicio"):
+if st.sidebar.button("🏠 Inicio"):
     st.session_state.pagina = "Inicio"
-if st.sidebar.button("Gestión de corpus"):
+if st.sidebar.button("📂 Gestión de corpus"):
     st.session_state.pagina = "Gestión de corpus"
-if st.sidebar.button("Extracción terminológica"):
+if st.sidebar.button("📊 Extracción terminológica"):
     st.session_state.pagina = "Extracción terminológica"
-if st.sidebar.button("Validación de términos"):
+if st.sidebar.button("✅ Validación de términos"):
     st.session_state.pagina = "Validación de términos"
-if st.sidebar.button("Acerca de"):
+if st.sidebar.button("ℹ️ Acerca de"):
     st.session_state.pagina = "Acerca de"  # Agregamos la opción "Acerca de" al final
 
 # ------------------------------
