@@ -33,7 +33,7 @@ if st.session_state.pagina == "Inicio":
         
         - 📂 **Gestión de corpus** → Subir archivos `.txt` (¡siempre es mejor si está codificado en UTF-8!) y estructurar un corpus con metadatos.
         - 📊 **Extracción terminológica** → Extraer términos mediante métodos como **TF-IDF, POS Tagging y C-Value**.
-        - ✅ **Validación de términos** → Subir un CSV con términos extraídos (¡el mismo que te genera esta app!) y marcar los términos reales.
+        - ✅ **Validación de términos** → Subir un archivo `.csv` con términos extraídos (¡el mismo que te genera esta app!) y cuáles de los candidatos a término son reales.
         
         📌 **Usa el menú lateral para navegar entre las distintas funciones. ¡Espero que te sirva!**
         """
