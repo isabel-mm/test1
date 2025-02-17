@@ -20,7 +20,7 @@ def acerca_de():
         
         Funcionalidades principales:
         - **Gestión de corpus** → Subir archivos `.txt` y estructurar un corpus con metadatos.
-        - **xtracción terminológica** → Identificar términos clave en textos mediante métodos computacionales.
+        - **Extracción terminológica** → Identificar términos clave en textos mediante métodos computacionales.
         - **Validación de términos** → Marcar términos extraídos como válidos o no.
                 
         ### 📬 Contacto
