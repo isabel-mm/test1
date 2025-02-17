@@ -22,13 +22,13 @@ nlp = load_model()
 
 # Menú lateral para seleccionar la funcionalidad
 st.sidebar.title("Menú de opciones")
-opcion = st.sidebar.radio("Selecciona una funcionalidad", ["Gestión de Corpus", "Extracción terminológica", "Validación de términos"])
+opcion = st.sidebar.radio("Selecciona una funcionalidad", ["Gestión de corpus", "Extracción terminológica", "Validación de términos"])
 
 # ------------------------------
-# Funcionalidad 1: Gestión de Corpus
+# Funcionalidad 1: Gestión de corpus
 # ------------------------------
-if opcion == "Gestión de Corpus":
-    st.title("📂 Gestión de Corpus")
+if opcion == "Gestión de corpus":
+    st.title("📂 Gestión de corpus")
 
     st.markdown(
         """
