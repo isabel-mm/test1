@@ -9,7 +9,7 @@ from acerca_de import acerca_de
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
-# 🔹 CSS para personalizar los botones y marcar el activo 🔹
+# 🔹 CSS para mejorar el diseño de los botones 🔹
 st.sidebar.markdown(
     """
     <style>
@@ -20,15 +20,17 @@ st.sidebar.markdown(
     }
     
     .sidebar-buttons button {
-        width: 80%;  /* 🔹 Reducimos el ancho de los botones */
-        border-radius: 8px;
+        width: 80%;
+        border-radius: 20px;  /* 🔹 Bordes redondeados */
         border: none;
         font-size: 16px;
-        font-weight: bold;
-        padding: 10px;
-        margin-bottom: 5px;
-        transition: 0.3s;
+        font-weight: 600;
+        padding: 12px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease-in-out;
         text-align: center;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* 🔹 Sombra sutil */
+        cursor: pointer;
     }
 
     /* 🎨 Colores específicos para cada botón */
@@ -38,21 +40,25 @@ st.sidebar.markdown(
     .btn-4 { background-color: #E91E63; color: white; } /* Rosa fuerte */
     .btn-5 { background-color: #F48FB1; color: white; } /* Rosa pastel */
 
+    /* 🔹 Efecto hover */
     .sidebar-buttons button:hover {
-        filter: brightness(85%);
+        transform: scale(1.05);  /* 🔹 Hace que el botón crezca un poco */
+        filter: brightness(90%);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
     }
 
     /* 🔹 Negrita y borde para el botón activo */
     .active {
         font-weight: 900;
-        border: 2px solid white;
+        border: 3px solid white;
+        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# 📌 Menú lateral con botones de colores y ancho reducido
+# 📌 Menú lateral con botones estilizados
 st.sidebar.markdown('<div class="sidebar-buttons">', unsafe_allow_html=True)
 
 def styled_button(label, page, btn_class):
@@ -65,7 +71,7 @@ def styled_button(label, page, btn_class):
     if st.session_state.pagina == page:
         st.session_state.pagina = page
 
-# Agregar botones con estilos personalizados
+# Agregar botones con estilos modernos
 styled_button("Inicio", "Inicio", "btn-1")
 styled_button("Gestión de corpus", "Gestión de corpus", "btn-2")
 styled_button("Extracción terminológica", "Extracción terminológica", "btn-3")
