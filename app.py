@@ -159,14 +159,18 @@ elif opcion == "Validación de términos":
             # Gráfico de precisión
             st.bar_chart({"Validado (%)": validated_percentage, "Descartado (%)": discarded_percentage})
 
-            # Botón para descargar el CSV validado
-            if st.button("⬇️ Descargar CSV validado"):
-                df_editable.to_csv("terminos_validados.csv", index=False)
-                st.success("✅ Archivo guardado como terminos_validados.csv")
-                st.download_button(
-                    label="📥 Descargar CSV validado",
-                    data=df_editable.to_csv(index=False),
-                    file_name="terminos_validados.csv",
-                    mime="text/csv"
-                )
+            # Filtrar solo los términos validados
+            df_validated = df_editable[df_editable["Es término"] == True][["Términos extraídos"]]
+
+            # Formatos de descarga
+            csv_data = df_validated.to_csv(index=False).encode("utf-8")
+            txt_data = "\n".join(df_validated["Términos extraídos"])
+            json_data = df_validated.to_json(orient="records", indent=4)
+
+            # Botones de descarga
+            st.subheader("📥 Descargar términos validados")
+            st.download_button(label="📥 Descargar CSV", data=csv_data, file_name="terminos_validados.csv", mime="text/csv")
+            st.download_button(label="📥 Descargar TXT", data=txt_data, file_name="terminos_validados.txt", mime="text/plain")
+            st.download_button(label="📥 Descargar JSON", data=json_data, file_name="terminos_validados.json", mime="application/json")
+
 
