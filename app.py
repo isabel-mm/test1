@@ -126,7 +126,7 @@ elif opcion == "Validación de términos":
     )
 
     # Cargar el CSV
-    uploaded_file = st.file_uploader("📎 Sube tu archivo CSV aquí")
+    uploaded_file = st.file_uploader("📎 Sube tu archivo CSV aquí", type=["csv"])
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
@@ -143,6 +143,22 @@ elif opcion == "Validación de términos":
             st.subheader("🔍 Revisión de términos")
             df_editable = st.data_editor(df, num_rows="dynamic", key="term_editor")
 
+            # Cálculo de precisión: % de términos validados y descartados
+            total_terms = len(df_editable)
+            validated_terms = df_editable["Es término"].sum()
+            discarded_terms = total_terms - validated_terms
+
+            validated_percentage = (validated_terms / total_terms) * 100 if total_terms > 0 else 0
+            discarded_percentage = (discarded_terms / total_terms) * 100 if total_terms > 0 else 0
+
+            # Mostrar estadísticas de precisión
+            st.subheader("📊 Estadísticas de validación")
+            st.write(f"✅ **Términos validados:** {validated_terms} ({validated_percentage:.2f}%)")
+            st.write(f"❌ **Términos descartados:** {discarded_terms} ({discarded_percentage:.2f}%)")
+
+            # Gráfico de precisión
+            st.bar_chart({"Validado (%)": validated_percentage, "Descartado (%)": discarded_percentage})
+
             # Botón para descargar el CSV validado
             if st.button("⬇️ Descargar CSV validado"):
                 df_editable.to_csv("terminos_validados.csv", index=False)
@@ -153,3 +169,4 @@ elif opcion == "Validación de términos":
                     file_name="terminos_validados.csv",
                     mime="text/csv"
                 )
+
