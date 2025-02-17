@@ -8,9 +8,6 @@ from validacion_terminos import validacion_terminos
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
-# Agregar una imagen o logo en la barra lateral (opcional)
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/6/6a/Vector_biblioteca.png", use_container_width=True)
-
 # Cambiar el diseño del menú lateral con botones
 st.sidebar.markdown("### 📌 Navegación")
 
@@ -35,7 +32,7 @@ if st.session_state.pagina == "Inicio":
         🔍 **¿Qué puedes hacer aquí?**
         
         - 📂 **Gestión de corpus** → Subir archivos `.txt` (¡siempre es mejor si está codificado en UTF-8!) y estructurar un corpus con metadatos.
-        - 🏷️ **Extracción terminológica** → Extraer términos mediante métodos como **TF-IDF, POS Tagging y C-Value**.
+        - 📊 **Extracción terminológica** → Extraer términos mediante métodos como **TF-IDF, POS Tagging y C-Value**.
         - ✅ **Validación de términos** → Subir un CSV con términos extraídos (¡el mismo que te genera esta app!) y marcar los términos reales.
         
         📌 **Usa el menú lateral para navegar entre las distintas funciones. ¡Espero que te sirva!**
