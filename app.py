@@ -9,7 +9,7 @@ if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
 # Cambiar el diseño del menú lateral con botones
-st.sidebar.markdown("### 📌 Navegación")
+st.sidebar.markdown("### Navegador")
 
 if st.sidebar.button("🏠 Inicio"):
     st.session_state.pagina = "Inicio"
