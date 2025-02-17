@@ -52,7 +52,7 @@ if opcion == "Gestión de corpus":
             with st.expander(f"📄 {uploaded_file.name}"):
                 author = st.text_input(f"✍️ Autor de '{uploaded_file.name}'", key=f"author_{i}")
                 year = st.number_input(f"📅 Año de publicación de '{uploaded_file.name}'", min_value=1000, max_value=2100, step=1, key=f"year_{i}")
-                text_type = st.selectbox(f"📑 Tipo de texto de '{uploaded_file.name}'", ["Artículo científico", "Ensayo", "Reporte", "Otro"], key=f"type_{i}")
+                text_type = st.selectbox(f"📑 Tipo de texto de '{uploaded_file.name}'", ["Artículo de revista", "Capítulo de libro", "Libro", "Reseña", "Otro"], key=f"type_{i}")
 
             corpus_data.append({"Archivo": uploaded_file.name, "Texto": text, "Autor": author, "Año": year, "Tipo de texto": text_type})
 
