@@ -3,7 +3,7 @@ import pandas as pd
 from gestion_corpus import gestion_corpus
 from extraccion_terminos import extraccion_terminologica
 from validacion_terminos import validacion_terminos
-from acerca_de import acerca_de
+from acerca_de import acerca_de 
 
 # Inicializar el estado de sesión para la navegación
 if "pagina" not in st.session_state:
@@ -13,72 +13,53 @@ if "pagina" not in st.session_state:
 st.sidebar.markdown(
     """
     <style>
-    .sidebar-buttons {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .sidebar-buttons button {
-        width: 80%;
-        border-radius: 20px;  /* 🔹 Bordes redondeados */
+    .stButton > button {
+        width: 80%;  /* 🔹 Ancho reducido */
+        border-radius: 12px;  /* 🔹 Bordes redondeados */
         border: none;
         font-size: 16px;
-        font-weight: 600;
-        padding: 12px;
+        font-weight: bold;
+        padding: 10px;
         margin-bottom: 8px;
-        transition: all 0.3s ease-in-out;
+        transition: 0.3s;
+        color: white;
         text-align: center;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* 🔹 Sombra sutil */
-        cursor: pointer;
     }
 
     /* 🎨 Colores específicos para cada botón */
-    .btn-1 { background-color: #7B1FA2; color: white; } /* Morado oscuro */
-    .btn-2 { background-color: #9C27B0; color: white; } /* Morado medio */
-    .btn-3 { background-color: #BA68C8; color: white; } /* Morado suave */
-    .btn-4 { background-color: #E91E63; color: white; } /* Rosa fuerte */
-    .btn-5 { background-color: #F48FB1; color: white; } /* Rosa pastel */
+    .stButton:nth-child(1) button { background-color: #7B1FA2; } /* Morado oscuro */
+    .stButton:nth-child(2) button { background-color: #9C27B0; } /* Morado medio */
+    .stButton:nth-child(3) button { background-color: #BA68C8; } /* Morado suave */
+    .stButton:nth-child(4) button { background-color: #E91E63; } /* Rosa fuerte */
+    .stButton:nth-child(5) button { background-color: #F48FB1; } /* Rosa pastel */
 
-    /* 🔹 Efecto hover */
-    .sidebar-buttons button:hover {
-        transform: scale(1.05);  /* 🔹 Hace que el botón crezca un poco */
+    .stButton > button:hover {
         filter: brightness(90%);
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
     }
 
     /* 🔹 Negrita y borde para el botón activo */
-    .active {
-        font-weight: 900;
-        border: 3px solid white;
-        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+    .stButton-active > button {
+        font-weight: bold;
+        border: 2px solid white;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# 📌 Menú lateral con botones estilizados
-st.sidebar.markdown('<div class="sidebar-buttons">', unsafe_allow_html=True)
+# 📌 Menú lateral con botones funcionales y estilizados
+st.sidebar.markdown("### Navegador")
 
-def styled_button(label, page, btn_class):
-    """Crea un botón estilizado con color y cambia la página activa."""
-    active_class = "active" if st.session_state.pagina == page else ""
-    clicked = st.sidebar.markdown(
-        f'<button class="{btn_class} {active_class}" onclick="window.location.reload()">{label}</button>',
-        unsafe_allow_html=True,
-    )
-    if st.session_state.pagina == page:
-        st.session_state.pagina = page
-
-# Agregar botones con estilos modernos
-styled_button("Inicio", "Inicio", "btn-1")
-styled_button("Gestión de corpus", "Gestión de corpus", "btn-2")
-styled_button("Extracción terminológica", "Extracción terminológica", "btn-3")
-styled_button("Validación de términos", "Validación de términos", "btn-4")
-styled_button("Acerca de", "Acerca de", "btn-5")
-
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
+if st.sidebar.button("Inicio"):
+    st.session_state.pagina = "Inicio"
+if st.sidebar.button("Gestión de corpus"):
+    st.session_state.pagina = "Gestión de corpus"
+if st.sidebar.button("Extracción terminológica"):
+    st.session_state.pagina = "Extracción terminológica"
+if st.sidebar.button("Validación de términos"):
+    st.session_state.pagina = "Validación de términos"
+if st.sidebar.button("Acerca de"):
+    st.session_state.pagina = "Acerca de"
 
 # ------------------------------
 # Funcionalidad 0: Pantalla de Inicio
