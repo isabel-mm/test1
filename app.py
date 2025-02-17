@@ -27,7 +27,7 @@ if st.session_state.pagina == "Inicio":
     st.title("📌 App para el trabajo terminográfico")
     st.markdown(
         """
-        👋 ¡Hola! Esta es una aplicación diseñada para ayudarte en la gestión y minería de textos, especialmente diseñada para asistirte en el trabajo terminográfico.
+        👋 ¡Hola! Esta es una aplicación creada para ayudarte en la gestión y minería de textos, especialmente diseñada para asistirte en el trabajo terminográfico.
         
         🔍 **¿Qué puedes hacer aquí?**
         
