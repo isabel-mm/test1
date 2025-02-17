@@ -38,19 +38,6 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-# 📌 Cambiar el diseño del menú lateral con botones de colores
-st.sidebar.markdown("### Navegador")
-
-if st.sidebar.button("🏠 Inicio"):
-    st.session_state.pagina = "Inicio"
-if st.sidebar.button("📂 Gestión de corpus"):
-    st.session_state.pagina = "Gestión de corpus"
-if st.sidebar.button("📊 Extracción terminológica"):
-    st.session_state.pagina = "Extracción terminológica"
-if st.sidebar.button("✅ Validación de términos"):
-    st.session_state.pagina = "Validación de términos"
-if st.sidebar.button("ℹ️ Acerca de"):
-    st.session_state.pagina = "Acerca de"  # Agregamos la opción "Acerca de" al final
 
 # ------------------------------
 # Funcionalidad 0: Pantalla de Inicio
