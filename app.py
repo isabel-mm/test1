@@ -9,11 +9,11 @@ from acerca_de import acerca_de  # Importamos la sección "Acerca de"
 if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
-# 🔹 CSS para cambiar los colores de los botones 🔹
+# 🔹 CSS para cambiar los colores de los botones y marcar el activo 🔹
 st.sidebar.markdown(
-    """
+    f"""
     <style>
-    .stButton > button {
+    .stButton > button {{
         width: 100%;
         border-radius: 8px;
         border: none;
@@ -21,36 +21,50 @@ st.sidebar.markdown(
         font-weight: bold;
         padding: 10px;
         transition: 0.3s;
-    }
-    
-    /* 🎨 Tonos de morado y rosa para los botones */
-    .stButton:nth-child(1) button { background-color: #7B1FA2; color: white; } /* Morado oscuro */
-    .stButton:nth-child(2) button { background-color: #9C27B0; color: white; } /* Morado medio */
-    .stButton:nth-child(3) button { background-color: #BA68C8; color: white; } /* Morado suave */
-    .stButton:nth-child(4) button { background-color: #E91E63; color: white; } /* Rosa fuerte */
-    .stButton:nth-child(5) button { background-color: #F48FB1; color: white; } /* Rosa pastel */
+        color: white;
+    }}
 
-    .stButton > button:hover {
+    /* 🎨 Tonos de morado y rosa */
+    .stButton:nth-child(1) button {{ background-color: #7B1FA2; }} /* Morado oscuro */
+    .stButton:nth-child(2) button {{ background-color: #9C27B0; }} /* Morado medio */
+    .stButton:nth-child(3) button {{ background-color: #BA68C8; }} /* Morado suave */
+    .stButton:nth-child(4) button {{ background-color: #E91E63; }} /* Rosa fuerte */
+    .stButton:nth-child(5) button {{ background-color: #F48FB1; }} /* Rosa pastel */
+
+    /* Efecto hover */
+    .stButton > button:hover {{
         filter: brightness(90%);
-    }
+    }}
+
+    /* 🔹 Negrita para el botón activo */
+    .stButton-active > button {{
+        font-weight: 900;
+        border: 2px solid white;
+    }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Menú lateral con botones de colores
+# 📌 Menú lateral con botones de colores
 st.sidebar.markdown("### Navegador")
 
-if st.sidebar.button("Inicio"):
-    st.session_state.pagina = "Inicio"
-if st.sidebar.button("Gestión de corpus"):
-    st.session_state.pagina = "Gestión de corpus"
-if st.sidebar.button("Extracción terminológica"):
-    st.session_state.pagina = "Extracción terminológica"
-if st.sidebar.button("Validación de términos"):
-    st.session_state.pagina = "Validación de términos"
-if st.sidebar.button("Acerca de"):
-    st.session_state.pagina = "Acerca de"
+def styled_button(label, page):
+    if st.session_state.pagina == page:
+        st.markdown(f'<div class="stButton-active">', unsafe_allow_html=True)
+        clicked = st.sidebar.button(label)
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        clicked = st.sidebar.button(label)
+    if clicked:
+        st.session_state.pagina = page
+
+# Agregar botones con la función estilizada
+styled_button("Inicio", "Inicio")
+styled_button("Gestión de corpus", "Gestión de corpus")
+styled_button("Extracción terminológica", "Extracción terminológica")
+styled_button("Validación de términos", "Validación de términos")
+styled_button("Acerca de", "Acerca de")
 
 # ------------------------------
 # Funcionalidad 0: Pantalla de Inicio
