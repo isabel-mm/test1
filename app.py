@@ -24,5 +24,3 @@ if opcion == "Inicio":
         
         """
     )
-
-    st.image("https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif", width=100)
