@@ -103,7 +103,28 @@ if opcion == "Extracción terminológica":
 # ------------------------------
 elif opcion == "Validación de términos":
     st.title("✅ Validación de términos extraídos")
-    st.write("Sube un archivo CSV con los términos extraídos y selecciona cuáles son términos válidos.")
+    
+    st.markdown(
+        """
+        🔍 **Instrucciones para la validación de términos**
+        
+        1. **Sube un archivo CSV** con los términos extraídos.
+        2. **El archivo debe contener al menos una columna llamada "Términos extraídos"**.
+        3. **Opcionalmente**, puede contener una columna "Es término" (con valores `True` o `False`).  
+        4. Si la columna "Es término" no está presente, se añadirá automáticamente para que puedas marcar los términos manualmente.  
+        5. Puedes modificar las marcas en la tabla y luego descargar el archivo validado.
+        
+        📌 **Ejemplo de estructura esperada del archivo CSV:**
+        
+        | Términos extraídos | Es término |
+        |--------------------|------------|
+        | aprendizaje automático | True |
+        | modelo lingüístico | False |
+        | procesamiento del lenguaje natural | True |
+
+        📎 **Sube tu archivo CSV aquí:**
+        """
+    )
 
     # Cargar el CSV
     uploaded_file = st.file_uploader("📎 Carga el archivo CSV con los términos extraídos", type=["csv"])
