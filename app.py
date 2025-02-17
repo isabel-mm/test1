@@ -109,12 +109,12 @@ elif opcion == "Validación de términos":
         🔍 **Instrucciones para la validación de términos**
         
         1. **Sube un archivo CSV** con los términos extraídos.
-        2. **El archivo debe contener al menos una columna llamada "Términos extraídos"**.
+        2. **El archivo debe contener al menos una columna llamada "Términos extraídos" (si has utilizado el extractor en esta misma app, ya estará así por defecto)**.
         3. **Opcionalmente**, puede contener una columna "Es término" (con valores `True` o `False`).  
-        4. Si la columna "Es término" no está presente, se añadirá automáticamente para que puedas marcar los términos manualmente.  
+        4. Si la columna "Es término" no está presente, se añadirá automáticamente para que puedas marcar los términos manualmente, ¡no te preocupes!  
         5. Puedes modificar las marcas en la tabla y luego descargar el archivo validado.
         
-        📌 **Ejemplo de estructura esperada del archivo CSV:**
+        📌 **Aquí tienes un ejemplo de estructura esperada del archivo CSV 😊**
         
         | Términos extraídos | Es término |
         |--------------------|------------|
