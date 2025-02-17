@@ -1,11 +1,31 @@
-GPL-3.0 License + No Commercial Clause
+Apache License 2.0 with Non-Commercial Clause
 
-Este software está licenciado bajo **GNU General Public License v3.0 (GPL-3.0)** con una cláusula adicional para prohibir su uso comercial.
+Copyright 2025 Isabel Moyano Moreno
 
-**Condiciones:**
-1. Cualquier uso de este código debe cumplir con los términos de la licencia **GPL-3.0**.
-2. **El uso comercial está prohibido**. No se permite vender, licenciar ni incorporar este código en software propietario con fines lucrativos.
-3. **Debe citarse** adecuadamente en trabajos académicos y publicaciones.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at:
 
-Para más información sobre la GPL-3.0, visite:  
-🔗 [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html)
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+### **Additional Clause: No Commercial Use & Academic Citation Required** ###
+
+In addition to the standard Apache 2.0 terms, the following conditions apply:
+
+1. **Non-Commercial Use Only**:  
+   This software **may not be used for commercial purposes**. This includes, but is not limited to, selling, licensing, or incorporating it into commercial products or services.
+
+2. **Academic Citation Required**:  
+   Any use of this software in research, academic work, or publications **must cite the original author** and reference the software properly.
+
+3. **Modification and Redistribution**:  
+   Modifications and redistributions of this software must retain this additional clause, ensuring that future versions also comply with the non-commercial use and citation requirements.
+
+For more details, visit:  
+🔗 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
