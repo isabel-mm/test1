@@ -25,9 +25,9 @@ def acerca_de():
                 
         ### 📬 Contacto
         Si te interesa mi trabajo, puedes encontrarme por aquí:
-        - ORCID: [🔗 Mi perfil ORCID](https://orcid.org/0000-0003-4284-8897)
-        - LinkedIn: [🔗 Mi perfil en LinkedIn](https://www.linkedin.com/in/isabel-moyano-moreno-62619a1bb/)
-        - Twitter/X: [🔗 @issyinthesky](https://twitter.com/issyinthesky)
+        - [🔗 ORCID](https://orcid.org/0000-0003-4284-8897)
+        - [🔗 LinkedIn](https://www.linkedin.com/in/isabel-moyano-moreno-62619a1bb/)
+        - [🔗 Twitter/X](https://twitter.com/issyinthesky)
         
         """
     )
