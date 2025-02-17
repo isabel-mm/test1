@@ -3,7 +3,6 @@ import spacy
 import subprocess
 import sys
 import pandas as pd
-import matplotlib.pyplot as plt
 from io import StringIO
 from term_extraction import extract_terms_tfidf, extract_terms_pos, extract_terms_cvalue
 from preprocessing import preprocess_text
@@ -35,7 +34,11 @@ if opcion == "Extracción terminológica":
         """ 
         🔍 **Esta aplicación permite extraer términos desde múltiples archivos de texto.**
         
-        📂 **Sube archivos .txt, selecciona el método de extracción y descarga los términos extraídos.**
+        - 📊 **Método estadístico (TF-IDF):** identifica términos con alta relevancia basándose en su frecuencia e importancia.
+        - 📖 **Método lingüístico (POS Tagging):** extrae términos clave utilizando categorías gramaticales (sustantivos, adjetivos, y estructuras específicas).
+        - 🔬 **Método híbrido (C-Value):** identifica términos multi-palabra relevantes basándose en su frecuencia y estructura dentro del texto.
+        
+        📂 **Sube uno o más archivos en texto plano (.txt), configura el preprocesamiento y selecciona un método para la extracción. Luego puedes descargar el listado de candidatos a término en formato .csv.**
         """
     )
 
@@ -51,7 +54,7 @@ if opcion == "Extracción terminológica":
 
         st.success("📂 Corpus cargado correctamente.")
 
-        # Opciones de preprocesamiento
+        # Opciones de preprocesamiento dentro de un expander
         with st.expander("⚙️ Opciones de preprocesamiento del corpus"):
             apply_lowercase = st.checkbox("Convertir todo a minúsculas")
             remove_stopwords = st.checkbox("Eliminar stopwords en inglés (excepto 'of')")
@@ -69,7 +72,7 @@ if opcion == "Extracción terminológica":
 
             st.text_area("📝 Contenido combinado del corpus (preprocesado):", corpus[:1000] + "...", height=200)
 
-            # Aplicar método seleccionado
+            # Aplicar método seleccionado con indicador de carga
             with st.spinner("🔍 Extrayendo términos..."):
                 if method == "Método estadístico (TF-IDF)":
                     terms = extract_terms_tfidf(corpus)
@@ -77,34 +80,54 @@ if opcion == "Extracción terminológica":
                     df_terms = pd.DataFrame(terms[:50], columns=["Término", "Puntaje TF-IDF"])
                 elif method == "Método lingüístico (POS)":
                     terms = extract_terms_pos(corpus)
-                    st.subheader("📖 Términos extraídos con POS Tagging")
+                    st.subheader("📖 Términos extraídos con POS Tagging (ordenados por frecuencia)")
                     df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Frecuencia"])
                 else:
                     terms = extract_terms_cvalue(corpus)
                     st.subheader("🔬 Términos extraídos con C-Value")
                     df_terms = pd.DataFrame(terms[:50], columns=["Términos extraídos", "Puntaje C-Value"])
 
-            st.dataframe(df_terms)
+            st.dataframe(df_terms)  # Mostrar los 50 primeros términos en la interfaz
 
-            # Descargar términos en CSV
+            # Botón para descargar términos
             csv = pd.DataFrame(terms, columns=["Términos extraídos", "Frecuencia"]).to_csv(index=False).encode("utf-8")
-            st.download_button("⬇️ Descargar términos (CSV)", data=csv, file_name="terminos_extraidos.csv", mime="text/csv")
+            st.download_button(
+                label="⬇️ Descargar todos los términos como CSV",
+                data=csv,
+                file_name="terminos_extraidos.csv",
+                mime="text/csv"
+            )
 
 # ------------------------------
 # Funcionalidad 2: Validación de términos
 # ------------------------------
 elif opcion == "Validación de términos":
     st.title("✅ Validación de términos extraídos")
-
+    
     st.markdown(
         """
         🔍 **Instrucciones para la validación de términos**
         
-        📎 **Sube un archivo CSV con los términos extraídos**.
+        1. **Sube un archivo CSV** con los términos extraídos.
+        2. **El archivo debe contener al menos una columna llamada "Términos extraídos" (si has utilizado el extractor en esta misma app, ya estará así por defecto)**.
+        3. **Opcionalmente**, puede contener una columna "Es término" (con valores `True` o `False`).  
+        4. Si la columna "Es término" no está presente, se añadirá automáticamente para que puedas marcar los términos manualmente, ¡no te preocupes!  
+        5. Puedes modificar las marcas en la tabla y luego descargar el archivo validado.
+        
+        📌 **Aquí tienes un ejemplo de estructura esperada del archivo CSV 😊**
+        
+        | Términos extraídos | Es término |
+        |--------------------|------------|
+        | aprendizaje automático | True |
+        | modelo lingüístico | False |
+        | procesamiento del lenguaje natural | True |
+
+        📎 **Sube tu archivo CSV aquí:**
         """
     )
 
-    uploaded_file = st.file_uploader("📎 Carga el archivo CSV", type=["csv"])
+    # Cargar el CSV
+    uploaded_file = st.file_uploader()
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
@@ -115,47 +138,19 @@ elif opcion == "Validación de términos":
         else:
             # Añadir una columna de validación si no existe
             if "Es término" not in df.columns:
-                df["Es término"] = False
+                df["Es término"] = False  # Inicialmente, todos los términos están en False
 
-            # Filtros avanzados
-            st.subheader("🎯 Filtros de visualización")
-            search_term = st.text_input("🔎 Buscar un término específico:")
-            show_unvalidated = st.checkbox("Mostrar solo términos no validados")
-
-            if search_term:
-                df = df[df["Términos extraídos"].str.contains(search_term, case=False, na=False)]
-
-            if show_unvalidated:
-                df = df[df["Es término"] == False]
-
-            # Tabla interactiva
+            # Mostrar los términos en una tabla editable
             st.subheader("🔍 Revisión de términos")
             df_editable = st.data_editor(df, num_rows="dynamic", key="term_editor")
 
-            # Estadísticas básicas
-            st.subheader("📊 Estadísticas de términos validados")
-            df_validated = df_editable[df_editable["Es término"] == True]
-            st.write(f"📌 **Número total de términos validados:** {len(df_validated)}")
-
-            # Gráfico de barras de términos más frecuentes
-            fig, ax = plt.subplots()
-            df_validated["Términos extraídos"].value_counts().head(10).plot(kind="bar", ax=ax)
-            ax.set_title("🔝 Términos más frecuentes")
-            ax.set_xlabel("Término")
-            ax.set_ylabel("Frecuencia")
-            st.pyplot(fig)
-
-            # Opciones de descarga
-            st.subheader("📥 Descargar términos validados")
-
-            # CSV
-            csv_validated = df_validated.to_csv(index=False).encode("utf-8")
-            st.download_button("📥 Descargar CSV", data=csv_validated, file_name="terminos_validados.csv", mime="text/csv")
-
-            # JSON
-            json_data = df_validated.to_json(orient="records", indent=4)
-            st.download_button("📥 Descargar JSON", data=json_data, file_name="terminos_validados.json", mime="application/json")
-
-            # TXT
-            txt_data = "\n".join(df_validated["Términos extraídos"])
-            st.download_button("📥 Descargar TXT", data=txt_data, file_name="terminos_validados.txt", mime="text/plain")
+            # Botón para descargar el CSV validado
+            if st.button("⬇️ Descargar CSV validado"):
+                df_editable.to_csv("terminos_validados.csv", index=False)
+                st.success("✅ Archivo guardado como terminos_validados.csv")
+                st.download_button(
+                    label="📥 Descargar CSV validado",
+                    data=df_editable.to_csv(index=False),
+                    file_name="terminos_validados.csv",
+                    mime="text/csv"
+                )
