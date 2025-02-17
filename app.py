@@ -36,7 +36,7 @@ if opcion == "Gestión de corpus":
         
         1. 📎 **Sube uno o más archivos de texto (.txt)**.  
         2. 📝 **Añade metadatos a cada texto** (autor, año y tipo de texto).  
-        3. 📊 **Descarga el corpus estructurado en CSV. ¡Así de fácil!**.  
+        3. 📊 **Descarga el corpus estructurado en CSV.**  
         """
     )
 
