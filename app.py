@@ -23,12 +23,12 @@ st.sidebar.markdown(
         transition: 0.3s;
     }
     
-    /* 🎨 Colores para cada botón */
-    .stButton:nth-child(1) button { background-color: #4CAF50; color: white; } /* Verde */
-    .stButton:nth-child(2) button { background-color: #2196F3; color: white; } /* Azul */
-    .stButton:nth-child(3) button { background-color: #FF9800; color: white; } /* Naranja */
-    .stButton:nth-child(4) button { background-color: #F44336; color: white; } /* Rojo */
-    .stButton:nth-child(5) button { background-color: #9C27B0; color: white; } /* Morado */
+    /* 🎨 Tonos de morado y rosa para los botones */
+    .stButton:nth-child(1) button { background-color: #7B1FA2; color: white; } /* Morado oscuro */
+    .stButton:nth-child(2) button { background-color: #9C27B0; color: white; } /* Morado medio */
+    .stButton:nth-child(3) button { background-color: #BA68C8; color: white; } /* Morado suave */
+    .stButton:nth-child(4) button { background-color: #E91E63; color: white; } /* Rosa fuerte */
+    .stButton:nth-child(5) button { background-color: #F48FB1; color: white; } /* Rosa pastel */
 
     .stButton > button:hover {
         filter: brightness(90%);
@@ -51,23 +51,23 @@ if st.sidebar.button("Validación de términos"):
     st.session_state.pagina = "Validación de términos"
 if st.sidebar.button("Acerca de"):
     st.session_state.pagina = "Acerca de"
-    
+
 # ------------------------------
 # Funcionalidad 0: Pantalla de Inicio
 # ------------------------------
 if st.session_state.pagina == "Inicio":
-    st.title("🤖 TermoLing, una estación de trabajo terminográfico")
+    st.title("TermoLing, una estación de trabajo terminográfico")
     st.markdown(
         """
-        👋 ¡Hola! Esta es una aplicación creada para ayudarte en la gestión y minería de textos, especialmente diseñada para asistirte en el trabajo terminográfico.
+        Esta es una aplicación creada para la gestión y minería de textos, especialmente diseñada para el trabajo terminográfico.
         
-        🔍 **¿Qué puedes hacer aquí?**
+        **¿Qué puedes hacer aquí?**
         
-        - 📂 **Gestión de corpus** → Subir archivos `.txt` (¡siempre es mejor si está codificado en UTF-8!) y estructurar un corpus con metadatos.
-        - 📊 **Extracción terminológica** → Extraer términos mediante métodos como **TF-IDF, POS Tagging y C-Value**.
-        - ✅ **Validación de términos** → Subir un archivo `.csv` con términos extraídos (¡el mismo que te genera esta app!) y validar los candidatos a término.
+        - **Gestión de corpus** → Subir archivos `.txt` (codificados en UTF-8) y estructurar un corpus con metadatos.
+        - **Extracción terminológica** → Extraer términos mediante métodos como **TF-IDF, POS Tagging y C-Value**.
+        - **Validación de términos** → Subir un archivo `.csv` con términos extraídos y validar los candidatos a término.
         
-        📌 **Usa el menú lateral para navegar entre las distintas funciones. ¡Espero que te sirva!**
+        Usa el menú lateral para navegar entre las distintas funciones.
         """
     )
 
