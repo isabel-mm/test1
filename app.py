@@ -9,7 +9,7 @@ if "pagina" not in st.session_state:
     st.session_state.pagina = "Inicio"
 
 # Agregar una imagen o logo en la barra lateral (opcional)
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/6/6a/Vector_biblioteca.png", use_column_width=True)
+st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/6/6a/Vector_biblioteca.png", use_container_width=True)
 
 # Cambiar el diseño del menú lateral con botones
 st.sidebar.markdown("### 📌 Navegación")
