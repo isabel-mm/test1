@@ -1,4 +1,7 @@
-# Menú lateral para seleccionar la funcionalidad
+import streamlit as st
+import pandas as pd 
+
+# Menú lateral para elegir entre funciones
 opcion = st.sidebar.radio("", ["Inicio", "Gestión de corpus", "Extracción terminológica", "Validación de términos"])
 
 # ------------------------------
