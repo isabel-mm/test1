@@ -35,12 +35,12 @@ if opcion == "Gestión de corpus":
         🔍 **Esta funcionalidad permite gestionar un corpus de textos**.  
         
         1. 📎 **Sube uno o más archivos de texto (.txt)**.  
-        2. 📝 **Añade metadatos a cada texto** (Autor, Año, Tipo de texto).  
-        3. 📊 **Descarga el corpus estructurado en CSV**.  
+        2. 📝 **Añade metadatos a cada texto** (autor, año y tipo de texto).  
+        3. 📊 **Descarga el corpus estructurado en CSV. ¡Así de fácil!**.  
         """
     )
 
-    uploaded_files = st.file_uploader("📎 Sube archivos .txt para tu corpus", type=["txt"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("📎 Sube archivos .txt para estructurar tu corpus", type=["txt"], accept_multiple_files=True)
 
     if uploaded_files:
         corpus_data = []
