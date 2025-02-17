@@ -134,7 +134,7 @@ elif opcion == "Validación de términos":
 
         # Verificar si la columna de términos existe
         if "Términos extraídos" not in df.columns:
-            st.error("⚠️ El archivo debe contener una columna llamada 'Términos extraídos'.")
+            st.error("⚠️ Recuerda, el archivo debe contener una columna llamada 'Términos extraídos'.")
         else:
             # Añadir una columna de validación si no existe
             if "Es término" not in df.columns:
