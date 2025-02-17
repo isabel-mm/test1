@@ -22,10 +22,58 @@ nlp = load_model()
 
 # Menú lateral para seleccionar la funcionalidad
 st.sidebar.title("Menú de opciones")
-opcion = st.sidebar.radio("Selecciona una funcionalidad", ["Extracción terminológica", "Validación de términos"])
+opcion = st.sidebar.radio("Selecciona una funcionalidad", ["Gestión de Corpus", "Extracción terminológica", "Validación de términos"])
 
 # ------------------------------
-# Funcionalidad 1: Extracción terminológica
+# Funcionalidad 1: Gestión de Corpus
+# ------------------------------
+if opcion == "Gestión de Corpus":
+    st.title("📂 Gestión de Corpus")
+
+    st.markdown(
+        """
+        🔍 **Esta funcionalidad permite gestionar un corpus de textos**.  
+        
+        1. 📎 **Sube uno o más archivos de texto (.txt)**.  
+        2. 📝 **Añade metadatos a cada texto** (Autor, Año, Tipo de texto).  
+        3. 📊 **Descarga el corpus estructurado en CSV**.  
+        """
+    )
+
+    # Cargar archivos
+    uploaded_files = st.file_uploader("📎 Sube archivos .txt para tu corpus", type=["txt"], accept_multiple_files=True)
+
+    if uploaded_files:
+        corpus_data = []
+
+        for uploaded_file in uploaded_files:
+            # Leer contenido del archivo
+            stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+            text = stringio.read()
+            
+            # Solicitar metadatos para cada archivo
+            st.subheader(f"📄 {uploaded_file.name}")
+            author = st.text_input(f"✍️ Autor de '{uploaded_file.name}'", key=f"author_{uploaded_file.name}")
+            year = st.number_input(f"📅 Año de publicación de '{uploaded_file.name}'", min_value=1000, max_value=2100, step=1, key=f"year_{uploaded_file.name}")
+            text_type = st.selectbox(f"📑 Tipo de texto de '{uploaded_file.name}'", ["Artículo científico", "Ensayo", "Reporte", "Otro"], key=f"type_{uploaded_file.name}")
+
+            # Guardar datos
+            corpus_data.append({"Archivo": uploaded_file.name, "Texto": text, "Autor": author, "Año": year, "Tipo de texto": text_type})
+
+        # Convertir a DataFrame
+        df_corpus = pd.DataFrame(corpus_data)
+
+        # Mostrar tabla con el corpus estructurado
+        st.subheader("📊 Corpus estructurado")
+        st.dataframe(df_corpus)
+
+        # Botón para descargar corpus en CSV
+        csv_corpus = df_corpus.to_csv(index=False).encode("utf-8")
+        st.download_button("📥 Descargar Corpus en CSV", data=csv_corpus, file_name="corpus.csv", mime="text/csv")
+
+
+# ------------------------------
+# Funcionalidad 2: Extracción terminológica
 # ------------------------------
 if opcion == "Extracción terminológica":
     st.title("📌 Extracción automática de términos")
@@ -99,7 +147,7 @@ if opcion == "Extracción terminológica":
             )
 
 # ------------------------------
-# Funcionalidad 2: Validación de términos
+# Funcionalidad 3: Validación de términos
 # ------------------------------
 elif opcion == "Validación de términos":
     st.title("✅ Validación de términos extraídos")
