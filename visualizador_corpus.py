@@ -1,3 +1,20 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+import spacy
+from collections import Counter
+from io import BytesIO
+
+# Cargar modelo de spaCy para procesamiento del lenguaje
+@st.cache_resource
+def load_spacy_model():
+    return spacy.load("en_core_web_sm")
+
+nlp = load_spacy_model()
+
+stop_words = set(nlp.Defaults.stop_words)  # Lista de stopwords de spaCy en inglés
+
 def dividir_texto(texto, tamano_maximo=1_000_000):
     """Divide el texto en fragmentos más pequeños para evitar el límite de spaCy."""
     return [texto[i : i + tamano_maximo] for i in range(0, len(texto), tamano_maximo)]
@@ -49,12 +66,74 @@ def generar_nube_palabras(texto):
     frecuencia = Counter(palabras_totales)
     wordcloud = WordCloud(width=800, height=400, background_color="white").generate_from_frequencies(frecuencia)
 
-    # Guardamos la imagen en memoria para permitir la descarga
     buffer = BytesIO()
     plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
     plt.savefig(buffer, format="png")
     buffer.seek(0)
-    
+
     return buffer
+
+def visualizador_corpus():
+    """Interfaz del visualizador de corpus en Streamlit."""
+    st.title("📊 Visualizador de Corpus")
+    
+    st.markdown(
+        """
+        🔍 **Este módulo permite analizar corpus lingüísticos:**
+        - **Genera una nube de palabras** basada en términos de contenido.
+        - **Muestra estadísticas básicas del corpus**, como número total de palabras, diversidad léxica y TTR.
+        - **Admite múltiples archivos en formato .txt o .csv**.
+        """
+    )
+
+    archivos = st.file_uploader("📂 Carga archivos de texto o CSV", type=["txt", "csv"], accept_multiple_files=True)
+
+    corpus = ""
+    if archivos:
+        for archivo in archivos:
+            if archivo.name.endswith(".txt"):
+                texto = archivo.getvalue().decode("utf-8").strip()
+                if texto:
+                    corpus += texto + "\n"
+            elif archivo.name.endswith(".csv"):
+                df = pd.read_csv(archivo)
+                if not df.empty:
+                    corpus += " ".join(df.astype(str).values.flatten()) + "\n"
+
+    if corpus.strip():  
+        if st.button("📊 Generar estadísticas"):
+            stats = calcular_estadisticas(corpus)
+            if stats is None:
+                st.error("❌ El texto está vacío o no es válido para el análisis.")
+                return
+
+            st.subheader("📊 Estadísticas del Corpus")
+            df_stats = pd.DataFrame(stats.items(), columns=["Métrica", "Valor"])
+            st.dataframe(df_stats)
+
+            # Permitir descarga de estadísticas
+            csv_stats = df_stats.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                label="📥 Descargar estadísticas en CSV",
+                data=csv_stats,
+                file_name="estadisticas_corpus.csv",
+                mime="text/csv"
+            )
+
+        if st.button("☁️ Generar nube de palabras"):
+            nube_buffer = generar_nube_palabras(corpus)
+            if nube_buffer:
+                st.subheader("☁️ Nube de palabras")
+                st.image(nube_buffer, use_column_width=True)
+
+                # Botón para descargar la imagen de la nube de palabras
+                st.download_button(
+                    label="📥 Descargar nube de palabras",
+                    data=nube_buffer,
+                    file_name="nube_palabras.png",
+                    mime="image/png"
+                )
+    else:
+        st.warning("⚠️ Carga al menos un archivo válido para analizar el corpus.")
