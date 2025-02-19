@@ -14,8 +14,8 @@ nlp = load_spacy_model()
 
 def calcular_estadisticas(texto):
     """Calcula estadísticas básicas del corpus."""
-    if not texto.strip():  # Evitar procesar texto vacío
-        return None
+    if not texto or texto.strip() == "":
+        return None  # Si el texto está vacío, devolvemos None
 
     doc = nlp(texto)
     tokens = [token.text for token in doc]
@@ -33,6 +33,10 @@ def calcular_estadisticas(texto):
 
 def generar_nube_palabras(texto):
     """Genera una nube de palabras a partir del texto."""
+    if not texto or texto.strip() == "":
+        st.warning("⚠️ No hay texto válido para generar una nube de palabras.")
+        return
+    
     doc = nlp(texto)
     palabras = [token.text.lower() for token in doc if token.is_alpha]
     
@@ -66,12 +70,15 @@ def visualizador_corpus():
     if archivos:
         for archivo in archivos:
             if archivo.name.endswith(".txt"):
-                corpus += archivo.getvalue().decode("utf-8") + "\n"
+                texto = archivo.getvalue().decode("utf-8").strip()
+                if texto:
+                    corpus += texto + "\n"
             elif archivo.name.endswith(".csv"):
                 df = pd.read_csv(archivo)
-                corpus += " ".join(df.astype(str).values.flatten()) + "\n"
+                if not df.empty:
+                    corpus += " ".join(df.astype(str).values.flatten()) + "\n"
 
-    if corpus.strip():  # Verificamos que haya contenido en el corpus
+    if corpus.strip():  # Verificamos que haya contenido en el corpus antes de procesarlo
         if st.button("📈 Analizar Corpus"):
             stats = calcular_estadisticas(corpus)
             if stats is None:
@@ -85,4 +92,4 @@ def visualizador_corpus():
             st.subheader("☁️ Nube de palabras")
             generar_nube_palabras(corpus)
     else:
-        st.warning("⚠️ Carga al menos un archivo para analizar el corpus.")
+        st.warning("⚠️ Carga al menos un archivo válido para analizar el corpus.")
