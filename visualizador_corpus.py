@@ -4,14 +4,13 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import spacy
 from collections import Counter
-from spacy.lang.en.stop_words import STOP_WORDS  # 🔹 Stopwords en inglés
 
 # Cargar modelo de spaCy con instalación automática si falta
 @st.cache_resource
 def load_spacy_model():
     model_name = "en_core_web_sm"
     try:
-        return spacy.load(model_name, disable=["parser", "ner"])  # 🔹 Deshabilitamos parser y NER
+        return spacy.load(model_name, disable=["parser", "ner"])  # Deshabilitamos parser y NER
     except OSError:
         st.warning(f"📥 Descargando el modelo de spaCy '{model_name}', espera unos segundos...")
         import subprocess
@@ -24,6 +23,9 @@ nlp = load_spacy_model()
 # 🔹 Aumentamos el límite de caracteres permitidos en spaCy
 nlp.max_length = 5_000_000  # Ahora soporta hasta 5 millones de caracteres
 
+# 🔹 Cargamos las stopwords desde el modelo
+stop_words = nlp.Defaults.stop_words
+
 def calcular_estadisticas(texto):
     """Calcula estadísticas básicas del corpus."""
     if not isinstance(texto, str) or not texto.strip():
@@ -34,13 +36,13 @@ def calcular_estadisticas(texto):
         return None
 
     try:
-        doc = nlp(texto)
+        doc = nlp(texto[:nlp.max_length])  # 🔹 Cortamos el texto si es demasiado largo
     except Exception as e:
         st.error(f"⚠️ Error procesando el texto con spaCy: {e}")
         return None
 
     tokens = [token.text for token in doc]
-    palabras = [token.text.lower() for token in doc if token.is_alpha and token.text.lower() not in STOP_WORDS]
+    palabras = [token.text.lower() for token in doc if token.is_alpha and token.text.lower() not in stop_words]
     tipos_palabras = set(palabras)
     densidad_lexica = len(set([token.text for token in doc if token.pos_ in ["NOUN", "VERB", "ADJ", "ADV"]])) / len(tokens) if len(tokens) > 0 else 0
     
@@ -59,13 +61,13 @@ def generar_nube_palabras(texto):
         return
     
     try:
-        doc = nlp(texto)
+        doc = nlp(texto[:nlp.max_length])  # 🔹 Cortamos el texto si es demasiado largo
     except Exception as e:
         st.error(f"⚠️ Error procesando el texto con spaCy: {e}")
         return
 
     # 🔹 Filtramos solo palabras de contenido y eliminamos stopwords
-    palabras = [token.text.lower() for token in doc if token.is_alpha and token.pos_ in ["NOUN", "VERB", "ADJ", "ADV"] and token.text.lower() not in STOP_WORDS]
+    palabras = [token.text.lower() for token in doc if token.is_alpha and token.pos_ in ["NOUN", "VERB", "ADJ", "ADV"] and token.text.lower() not in stop_words]
     
     if not palabras:
         st.warning("⚠️ No hay suficientes palabras de contenido para generar una nube de palabras.")
