@@ -10,6 +10,7 @@ def load_spacy_model():
     return spacy.load("en_core_web_sm")
 
 nlp = load_spacy_model()
+nlp.max_length = 6_000_000
 
 def dividir_texto(texto, tamano_maximo=1_000_000):
     """Divide el texto en fragmentos pequeños para evitar el límite de spaCy."""
