@@ -12,16 +12,18 @@ def load_spacy_model():
     return spacy.load("en_core_web_sm")
 
 nlp = load_spacy_model()
-
-stop_words = set(nlp.Defaults.stop_words)  # Lista de stopwords de spaCy en inglés
+stop_words = set(nlp.Defaults.stop_words)  # Lista de stopwords en inglés
 
 def dividir_texto(texto, tamano_maximo=1_000_000):
     """Divide el texto en fragmentos más pequeños para evitar el límite de spaCy."""
-    return [texto[i : i + tamano_maximo] for i in range(0, len(texto), tamano_maximo)]
+    fragmentos = [texto[i : i + tamano_maximo] for i in range(0, len(texto), tamano_maximo)]
+    st.write(f"🔍 Se dividió el texto en {len(fragmentos)} fragmentos.")  # Depuración
+    return fragmentos
 
 def calcular_estadisticas(texto):
     """Calcula estadísticas básicas del corpus en fragmentos."""
     if not isinstance(texto, str) or not texto.strip():
+        st.error("❌ El texto está vacío o no es válido.")
         return None  
 
     fragmentos = dividir_texto(texto)
@@ -36,6 +38,8 @@ def calcular_estadisticas(texto):
         total_palabras += len(palabras)
         total_tipos.update(palabras)
         total_palabras_contenido.update([token.text for token in doc if token.pos_ in ["NOUN", "VERB", "ADJ", "ADV"]])
+
+    st.write("✅ Estadísticas calculadas con éxito.")  # Depuración
 
     return {
         "Total de tokens": total_tokens,
@@ -104,6 +108,7 @@ def visualizador_corpus():
 
     if corpus.strip():  
         if st.button("📊 Generar estadísticas"):
+            st.write("📢 Procesando estadísticas...")  # Depuración
             stats = calcular_estadisticas(corpus)
             if stats is None:
                 st.error("❌ El texto está vacío o no es válido para el análisis.")
@@ -123,6 +128,7 @@ def visualizador_corpus():
             )
 
         if st.button("☁️ Generar nube de palabras"):
+            st.write("📢 Generando nube de palabras...")  # Depuración
             nube_buffer = generar_nube_palabras(corpus)
             if nube_buffer:
                 st.subheader("☁️ Nube de palabras")
