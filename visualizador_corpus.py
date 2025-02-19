@@ -20,6 +20,9 @@ def load_spacy_model():
 
 nlp = load_spacy_model()
 
+# 🔹 Aumentamos el límite de caracteres permitidos en spaCy
+nlp.max_length = 5_000_000  # Ajusta el límite a 5 millones de caracteres
+
 def calcular_estadisticas(texto):
     """Calcula estadísticas básicas del corpus."""
     if not isinstance(texto, str) or not texto.strip():
@@ -101,6 +104,10 @@ def visualizador_corpus():
     # Verificamos que el corpus es válido antes de procesarlo
     if corpus:
         st.text_area("📄 Texto del corpus:", corpus[:1000] + "...", height=200)  # Mostrar parte del corpus
+
+        if len(corpus) > nlp.max_length:
+            st.error(f"❌ El texto es demasiado largo ({len(corpus)} caracteres). Reduce el tamaño o ajusta `nlp.max_length`.")
+            return
 
         if st.button("📈 Analizar Corpus"):
             stats = calcular_estadisticas(corpus)
