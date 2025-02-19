@@ -5,19 +5,32 @@ from wordcloud import WordCloud
 import spacy
 from collections import Counter
 
-# Cargar modelo de spaCy para procesamiento del lenguaje
+# Cargar modelo de spaCy con instalación automática si falta
 @st.cache_resource
 def load_spacy_model():
-    return spacy.load("en_core_web_sm")
+    model_name = "en_core_web_sm"
+    try:
+        return spacy.load(model_name)
+    except OSError:
+        st.warning(f"📥 Descargando el modelo de spaCy '{model_name}', espera unos segundos...")
+        import subprocess
+        import sys
+        subprocess.run([sys.executable, "-m", "spacy", "download", model_name], check=True)
+        return spacy.load(model_name)
 
 nlp = load_spacy_model()
 
 def calcular_estadisticas(texto):
     """Calcula estadísticas básicas del corpus."""
-    if not texto or texto.strip() == "":
-        return None  # Si el texto está vacío, devolvemos None
+    if not isinstance(texto, str) or not texto.strip():
+        return None  # Si el texto está vacío o no es str, devolvemos None
 
-    doc = nlp(texto)
+    try:
+        doc = nlp(texto)
+    except Exception as e:
+        st.error(f"⚠️ Error procesando el texto con spaCy: {e}")
+        return None
+
     tokens = [token.text for token in doc]
     palabras = [token.text for token in doc if token.is_alpha]
     tipos_palabras = set(palabras)
@@ -33,11 +46,16 @@ def calcular_estadisticas(texto):
 
 def generar_nube_palabras(texto):
     """Genera una nube de palabras a partir del texto."""
-    if not texto or texto.strip() == "":
+    if not isinstance(texto, str) or not texto.strip():
         st.warning("⚠️ No hay texto válido para generar una nube de palabras.")
         return
     
-    doc = nlp(texto)
+    try:
+        doc = nlp(texto)
+    except Exception as e:
+        st.error(f"⚠️ Error procesando el texto con spaCy: {e}")
+        return
+
     palabras = [token.text.lower() for token in doc if token.is_alpha]
     
     if not palabras:
@@ -70,7 +88,7 @@ def visualizador_corpus():
     if archivos:
         for archivo in archivos:
             if archivo.name.endswith(".txt"):
-                texto = archivo.getvalue().decode("utf-8").strip()
+                texto = archivo.getvalue().decode("utf-8", errors="ignore").strip()
                 if texto:
                     corpus += texto + "\n"
             elif archivo.name.endswith(".csv"):
@@ -78,7 +96,12 @@ def visualizador_corpus():
                 if not df.empty:
                     corpus += " ".join(df.astype(str).values.flatten()) + "\n"
 
-    if corpus.strip():  # Verificamos que haya contenido en el corpus antes de procesarlo
+    corpus = corpus.strip()  # Eliminamos espacios innecesarios
+
+    # Verificamos que el corpus es válido antes de procesarlo
+    if corpus:
+        st.text_area("📄 Texto del corpus:", corpus[:1000] + "...", height=200)  # Mostrar parte del corpus
+
         if st.button("📈 Analizar Corpus"):
             stats = calcular_estadisticas(corpus)
             if stats is None:
