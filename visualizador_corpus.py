@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import spacy
 from collections import Counter
+from spacy.lang.en.stop_words import STOP_WORDS  # 🔹 Stopwords en inglés
 
 # Cargar modelo de spaCy con instalación automática si falta
 @st.cache_resource
@@ -39,7 +40,7 @@ def calcular_estadisticas(texto):
         return None
 
     tokens = [token.text for token in doc]
-    palabras = [token.text for token in doc if token.is_alpha]
+    palabras = [token.text.lower() for token in doc if token.is_alpha and token.text.lower() not in STOP_WORDS]
     tipos_palabras = set(palabras)
     densidad_lexica = len(set([token.text for token in doc if token.pos_ in ["NOUN", "VERB", "ADJ", "ADV"]])) / len(tokens) if len(tokens) > 0 else 0
     
@@ -52,7 +53,7 @@ def calcular_estadisticas(texto):
     }
 
 def generar_nube_palabras(texto):
-    """Genera una nube de palabras a partir del texto."""
+    """Genera una nube de palabras a partir del texto, excluyendo stopwords y solo con palabras de contenido."""
     if not isinstance(texto, str) or not texto.strip():
         st.warning("⚠️ No hay texto válido para generar una nube de palabras.")
         return
@@ -63,10 +64,11 @@ def generar_nube_palabras(texto):
         st.error(f"⚠️ Error procesando el texto con spaCy: {e}")
         return
 
-    palabras = [token.text.lower() for token in doc if token.is_alpha]
+    # 🔹 Filtramos solo palabras de contenido y eliminamos stopwords
+    palabras = [token.text.lower() for token in doc if token.is_alpha and token.pos_ in ["NOUN", "VERB", "ADJ", "ADV"] and token.text.lower() not in STOP_WORDS]
     
     if not palabras:
-        st.warning("⚠️ No hay suficientes palabras para generar una nube de palabras.")
+        st.warning("⚠️ No hay suficientes palabras de contenido para generar una nube de palabras.")
         return
     
     frecuencia = Counter(palabras)
@@ -83,7 +85,7 @@ def visualizador_corpus():
     st.markdown(
         """
         🔍 **Este módulo permite analizar corpus lingüísticos:**
-        - **Genera una nube de palabras** a partir del texto.
+        - **Genera una nube de palabras** a partir del texto (sin palabras funcionales).
         - **Muestra estadísticas básicas del corpus** como número total de palabras, diversidad léxica y TTR.
         - **Admite múltiples archivos en formato .txt o .csv**.
         """
@@ -123,7 +125,7 @@ def visualizador_corpus():
             df_stats = pd.DataFrame(stats.items(), columns=["Métrica", "Valor"])
             st.dataframe(df_stats)
 
-            st.subheader("☁️ Nube de palabras")
+            st.subheader("☁️ Nube de palabras (solo contenido)")
             generar_nube_palabras(corpus)
     else:
         st.warning("⚠️ Carga al menos un archivo válido para analizar el corpus.")
