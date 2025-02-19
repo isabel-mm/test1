@@ -10,23 +10,27 @@ from collections import Counter
 def load_spacy_model():
     model_name = "en_core_web_sm"
     try:
-        return spacy.load(model_name)
+        return spacy.load(model_name, disable=["parser", "ner"])  # 🔹 Deshabilitamos parser y NER
     except OSError:
         st.warning(f"📥 Descargando el modelo de spaCy '{model_name}', espera unos segundos...")
         import subprocess
         import sys
         subprocess.run([sys.executable, "-m", "spacy", "download", model_name], check=True)
-        return spacy.load(model_name)
+        return spacy.load(model_name, disable=["parser", "ner"])
 
 nlp = load_spacy_model()
 
 # 🔹 Aumentamos el límite de caracteres permitidos en spaCy
-nlp.max_length = 5_000_000  # Ajusta el límite a 5 millones de caracteres
+nlp.max_length = 5_000_000  # Ahora soporta hasta 5 millones de caracteres
 
 def calcular_estadisticas(texto):
     """Calcula estadísticas básicas del corpus."""
     if not isinstance(texto, str) or not texto.strip():
         return None  # Si el texto está vacío o no es str, devolvemos None
+
+    if len(texto) > nlp.max_length:
+        st.error(f"❌ El texto es demasiado largo ({len(texto)} caracteres). Reduce el tamaño o usa un corpus más pequeño.")
+        return None
 
     try:
         doc = nlp(texto)
