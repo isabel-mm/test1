@@ -8,7 +8,7 @@ from collections import Counter
 # Cargar modelo de spaCy para procesamiento del lenguaje
 @st.cache_resource
 def load_spacy_model():
-    return spacy.load("es_core_news_sm")
+    return spacy.load("en_core_web_sm")
 
 nlp = load_spacy_model()
 
